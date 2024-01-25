@@ -74,6 +74,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
         ignore_tags=ignore_tags
     )
     valid_dataset = EASTDataset(valid_dataset)
+    _num_batches = math.ceil(len(valid_dataset) / batch_size)
     valid_loader = DataLoader(
         valid_dataset,
         batch_size=batch_size,
@@ -92,7 +93,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     #model.train()
     for epoch in range(max_epoch):
         model.train()
-        epoch_loss, epoch_start = 0, time.time()
+        epoch_loss, epoch_start, _epoch_loss = 0, time.time(), 0
         with tqdm(total=num_batches) as pbar:
             for img, gt_score_map, gt_geo_map, roi_mask in train_loader:
                 pbar.set_description('[Epoch {}]'.format(epoch + 1))
@@ -115,23 +116,22 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
 
         model.eval()
         valid_loss = 0
-        with tqdm(total=num_batches) as _pbar:
+        with tqdm(total=_num_batches) as _pbar:
             with torch.no_grad():
                 for img, gt_score_map, gt_geo_map, roi_mask in valid_loader:
-                    _, _extra_info = model.train_step(img, gt_score_map, gt_geo_map, roi_mask)
-                    # valid_loss += _loss.item()
-                    # valid_loss /= len(valid_loader)
+                    _loss, _extra_info = model.train_step(img, gt_score_map, gt_geo_map, roi_mask)
+                    _loss_val = _loss.item()
+                    _epoch_loss += _loss_val
 
                     _pbar.update(1)
                     _valid_dict = {
                         'v_Cls loss': _extra_info['cls_loss'], 'v_Angle loss': _extra_info['angle_loss'],
                         'v_IoU loss': _extra_info['iou_loss']
                     }
-                    _pbar.set_postfix(val_dict)
+                    _pbar.set_postfix(_valid_dict)
 
         # 훈련 및 검증 메트릭을 모두 포함하여 출력
-        print(f'Epoch {epoch + 1} - Train Loss: {epoch_loss / num_batches:.4f}, '
-          f'Valid Loss: {valid_loss:.4f}, {_valid_dict}')
+        #print(f'Epoch {epoch + 1} - Train Loss: {_epoch_loss / num_batches:.4f}, 'f'Valid Loss: {valid_loss:.4f}, {_valid_dict}')
 
         #print(f'Epoch {epoch+1}, Valid Loss: {valid_loss:.4f}')
 
@@ -147,6 +147,8 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
             epoch_loss / num_batches, timedelta(seconds=time.time() - epoch_start)))
 
         if (epoch + 1) % save_interval == 0:
+            print('Vlid loss: {:.4f} | Elapsed time: {}'.format(
+                _epoch_loss / num_batches, timedelta(seconds=time.time() - epoch_start)))
             if not osp.exists(model_dir):
                 os.makedirs(model_dir)
 

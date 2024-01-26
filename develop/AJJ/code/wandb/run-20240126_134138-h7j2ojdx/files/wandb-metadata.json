@@ -1,0 +1,91 @@
+{
+    "os": "Linux-5.4.0-99-generic-x86_64-with-glibc2.31",
+    "python": "3.10.13",
+    "heartbeatAt": "2024-01-26T04:41:39.094077",
+    "startedAt": "2024-01-26T04:41:38.160334",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--max_epoch",
+        "1"
+    ],
+    "state": "running",
+    "program": "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/AJJ/code/train.py",
+    "codePathLocal": "train.py",
+    "codePath": "develop/AJJ/code/train.py",
+    "git": {
+        "remote": "https://github.com/boostcampaitech6/level2-cv-datacentric-cv-10.git",
+        "commit": "fae003f9ce46def14b2a844ac3b834a55438d6a0"
+    },
+    "email": null,
+    "root": "/data/ephemeral/home/level2-cv-datacentric-cv-10",
+    "host": "instance-6384",
+    "username": "root",
+    "executable": "/opt/conda/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 2200.229,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2200.229,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.229,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.229,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.229,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.229,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.229,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.229,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.229,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 48.963348388671875,
+            "used": 27.01775360107422
+        }
+    },
+    "gpu": "Tesla V100-SXM2-32GB",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "Tesla V100-SXM2-32GB",
+            "memory_total": 34089730048
+        }
+    ],
+    "memory": {
+        "total": 88.38546752929688
+    }
+}

@@ -318,6 +318,10 @@ def pepper_noise(img, vertices): # pepper 노이즈 추가
     result_image = Image.blend(img, background_f, alpha=0.2)
     return result_image, vertices
 
+def gaussianblur(img, vertices):
+    blurred_img = img.filter(ImageFilter.GaussianBlur(radius=3))
+    return blurred_img, vertices
+
 def adjust_height(img, vertices, ratio=0.2):
     '''adjust height of image to aug data
     Input:
@@ -443,10 +447,12 @@ class SceneTextDataset(Dataset):
 
         image = Image.open(image_fpath)
         random_num = random.random()
-        if random_num >= 0.9:
+        if random_num >= 0.95:
             image, vertices = move_pepper_noise(image, vertices)
         if random_num <= 0.1:
-            image, vertices = pepper_noise(image, vertices)    
+            image, vertices = pepper_noise(image, vertices)
+        if random_num > 0.1 and random_num <= 0.2:
+            image, vertices = gaussianblur(image, vertices)
         image, vertices = resize_img(image, vertices, self.image_size)
         image, vertices = adjust_height(image, vertices)
         image, vertices = rotate_img(image, vertices)

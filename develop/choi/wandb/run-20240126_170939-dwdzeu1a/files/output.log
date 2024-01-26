@@ -1,34 +1,13 @@
 
 cuda 사용중 : True
-
-
-
-
-
-
-
-[Epoch 1]: 100%|█| 10/10 [11:36<00:00, 69.63s/it, t_Cls loss=
-
- 33%|████▋         | 1/3 [02:53<05:47, 173.93s/it, v_Cls loss=0.91, v_Angle loss=1.24, v_IoU loss=5.1]
-100%|█████████████| 3/3 [02:54<00:00, 58.21s/it, v_Cls loss=0.924, v_Angle loss=1.66, v_IoU loss=4.95]
-
-
-
-
-
-
-
-
-
-[Epoch 2]: 100%|█| 10/10 [11:46<00:00, 70.68s/it, t_Cls loss=0
-  0%|                                                                                                                                                                          | 0/3 [00:54<?, ?it/s]
+  0%|                                                                                                                                                                                                                                                                                   | 0/10 [05:29<?, ?it/s]
 Traceback (most recent call last):
   File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/train.py", line 189, in <module>
     main(args)
   File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/train.py", line 184, in main
     do_training(**args.__dict__)
-  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/train.py", line 138, in do_training
-    for img, gt_score_map, gt_geo_map, roi_mask in valid_loader:
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/train.py", line 115, in do_training
+    for img, gt_score_map, gt_geo_map, roi_mask in train_loader:
   File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 630, in __next__
     data = self._next_data()
   File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1328, in _next_data

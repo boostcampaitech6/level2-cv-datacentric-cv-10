@@ -52,7 +52,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     # best_loss = float('inf')
     wandb.init(
     # Set the project where this run will be logged
-    project="choi", name='first_trial',
+    project="choi", name='fourth_trial',
     # Track hyperparameters and run metadata
     config={
         "learning_rate": args.learning_rate,  # 학습률을 wandb config에 추가

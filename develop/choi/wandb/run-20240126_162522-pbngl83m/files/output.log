@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/train.py", line 189, in <module>
+    main(args)
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/train.py", line 184, in main
+    do_training(**args.__dict__)
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/train.py", line 99, in do_training
+    model = EAST()
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/model.py", line 222, in __init__
+    self.extractor = Extractor(pretrained)
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/choi/model.py", line 69, in __init__
+    vgg16_bn.load_state_dict(torch.load('./pths/vgg16_bn-6c64b313.pth'))
+  File "/opt/conda/lib/python3.10/site-packages/torch/serialization.py", line 986, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/opt/conda/lib/python3.10/site-packages/torch/serialization.py", line 435, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/opt/conda/lib/python3.10/site-packages/torch/serialization.py", line 416, in __init__
+    super().__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: './pths/vgg16_bn-6c64b313.pth'

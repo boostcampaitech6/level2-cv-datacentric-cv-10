@@ -83,7 +83,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     # DataLoader는 훈련을 위해 배치 단위로 데이터를 로드하는 PyTorch 유틸리티입니다.
 
     # W&B 초기화
-    wandb.init(project="Project03_OCR", name="test_01", config={ # project명, test name 변경하고 사용
+    wandb.init(project="Project03_OCR", name="test_02", config={ # project명, test name 변경하고 사용
         "learning_rate": learning_rate,
         "batch_size": batch_size,
         "max_epoch": max_epoch,

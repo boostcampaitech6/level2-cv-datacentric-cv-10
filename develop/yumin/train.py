@@ -14,6 +14,9 @@ from tqdm import tqdm
 from east_dataset import EASTDataset
 from dataset import SceneTextDataset
 from model import EAST
+import numpy as np
+np.random.seed(2024)
+
 import wandb
 
 def parse_args():
@@ -49,11 +52,11 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     # best_loss = float('inf')
     wandb.init(
     # Set the project where this run will be logged
-    project="yumin", name='base',
+    project="yumin", name='pepper',
     # Track hyperparameters and run metadata
     config={
-        "learning_rate": '1e-5 ~ 1e-2',
-        "epochs": 200,
+        "learning_rate": args.learning_rate,  # 학습률을 wandb config에 추가
+        "epochs": args.max_epoch,
     },
     )
 
@@ -129,13 +132,13 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
 
 
         model.eval()
-        valid_loss = 0
+        # valid_loss = 0
         with tqdm(total=_num_batches) as _pbar:
             with torch.no_grad():
                 for img, gt_score_map, gt_geo_map, roi_mask in valid_loader:
                     _loss, _extra_info = model.train_step(img, gt_score_map, gt_geo_map, roi_mask)
-                    _loss_val = _loss.item()
-                    _epoch_loss += _loss_val
+                    # _loss_val = _loss.item()
+                    # _epoch_loss += _loss_val
 
                     _pbar.update(1)
                     _valid_dict = {
@@ -144,7 +147,8 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
                     }
                     _pbar.set_postfix(_valid_dict)
 
-        wandb.log({'t_Cls loss': extra_info['cls_loss'],
+        wandb.log({'learning_rate': optimizer.param_groups[0]['lr'],
+                   't_Cls loss': extra_info['cls_loss'],
                    't_Angle loss': extra_info['angle_loss'],
                     't_IoU loss': extra_info['iou_loss'],
                     "v_Cls loss": _extra_info['cls_loss'],
@@ -172,7 +176,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
             if not osp.exists(model_dir):
                 os.makedirs(model_dir)
 
-            ckpt_fpath = osp.join(model_dir, '{epoch}.pth')
+            ckpt_fpath = osp.join(model_dir, f'{epoch+1}.pth')
             torch.save(model.state_dict(), ckpt_fpath)
 
 

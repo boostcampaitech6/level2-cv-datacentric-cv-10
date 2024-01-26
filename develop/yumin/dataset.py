@@ -265,7 +265,7 @@ def resize_img(img, vertices, size):
     new_vertices = vertices * ratio
     return img, new_vertices
 
-def pepper_noise(img, vertices):  # pepper 노이즈 추가
+def move_pepper_noise(img, vertices):  # 뒷배경과 pepper 노이즈 추가
     original_width, original_height = img.size
     long_side = max(original_width,original_height)
     # new_original_width, new_original_height = int(original_width * 0.8), int(original_height * 0.8)
@@ -300,6 +300,23 @@ def pepper_noise(img, vertices):  # pepper 노이즈 추가
 
     return result_image, new_vertices
 
+def pepper_noise(img, vertices): # pepper 노이즈 추가
+    # 원하는 노이즈 pepper 추가
+    num_noise_points = 30000  # 점의 개수
+    noise_color = (0, 0, 0)  # 검정색
+    original_width, original_height = img.size
+    background_f = Image.new('RGB', (original_width, original_height), (255, 255, 255))
+
+    draw = ImageDraw.Draw(background_f)
+    for _ in range(num_noise_points):
+        x = random.randint(0, original_width)
+        y = random.randint(0, original_height)
+        noise_color = (0, 0, 0)
+        radius = random.randint(1, 3)
+        draw.ellipse((x-radius, y-radius, x+radius, y+radius), fill=noise_color)
+    background_f = background_f.filter(ImageFilter.GaussianBlur(radius=1)) # 점 blur
+    result_image = Image.blend(img, background_f, alpha=0.2)
+    return result_image, vertices
 
 def adjust_height(img, vertices, ratio=0.2):
     '''adjust height of image to aug data
@@ -425,8 +442,11 @@ class SceneTextDataset(Dataset):
         )
 
         image = Image.open(image_fpath)
-        if random.random() >= 0.9:
-            image, vertices = pepper_noise(image, vertices)
+        random_num = random.random()
+        if random_num >= 0.9:
+            image, vertices = move_pepper_noise(image, vertices)
+        if random_num <= 0.1:
+            image, vertices = pepper_noise(image, vertices)    
         image, vertices = resize_img(image, vertices, self.image_size)
         image, vertices = adjust_height(image, vertices)
         image, vertices = rotate_img(image, vertices)

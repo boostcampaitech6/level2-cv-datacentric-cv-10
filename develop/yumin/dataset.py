@@ -451,7 +451,7 @@ class SceneTextDataset(Dataset):
             image, vertices = move_pepper_noise(image, vertices)
         elif random_num > 0.8 and random_num <= 0.9:
             image, vertices = pepper_noise(image, vertices)
-        elif random_num > 0.7 and random_num <= 0.8:
+        elif random_num > 0.6 and random_num <= 0.8:
             image, vertices = gaussianblur(image, vertices)
         image, vertices = resize_img(image, vertices, self.image_size)
         image, vertices = adjust_height(image, vertices)

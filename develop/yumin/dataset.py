@@ -302,7 +302,7 @@ def move_pepper_noise(img, vertices):  # 뒷배경과 pepper 노이즈 추가
 
 def pepper_noise(img, vertices): # pepper 노이즈 추가
     # 원하는 노이즈 pepper 추가
-    num_noise_points = 30000  # 점의 개수
+    num_noise_points = 60000  # 점의 개수
     noise_color = (0, 0, 0)  # 검정색
     original_width, original_height = img.size
     background_f = Image.new('RGB', (original_width, original_height), (255, 255, 255))
@@ -312,7 +312,7 @@ def pepper_noise(img, vertices): # pepper 노이즈 추가
         x = random.randint(0, original_width)
         y = random.randint(0, original_height)
         noise_color = (0, 0, 0)
-        radius = random.randint(1, 3)
+        radius = random.randint(1, 5)
         draw.ellipse((x-radius, y-radius, x+radius, y+radius), fill=noise_color)
     background_f = background_f.filter(ImageFilter.GaussianBlur(radius=1)) # 점 blur
     result_image = Image.blend(img, background_f, alpha=0.1)
@@ -343,7 +343,7 @@ def adjust_height(img, vertices, ratio=0.2):
     return img, new_vertices
 
 
-def rotate_img(img, vertices, angle_range=20):
+def rotate_img(img, vertices, angle_range=5):
     '''rotate image [-10, 10] degree to aug data
     Input:
         img         : PIL Image
@@ -446,7 +446,7 @@ class SceneTextDataset(Dataset):
         )
 
         image = Image.open(image_fpath)
-        random_num = random.random()
+        random_num = np.random.rand()
         if random_num > 0.9:
             image, vertices = move_pepper_noise(image, vertices)
         elif random_num > 0.8 and random_num <= 0.9:
@@ -455,7 +455,7 @@ class SceneTextDataset(Dataset):
             image, vertices = gaussianblur(image, vertices)
         image, vertices = resize_img(image, vertices, self.image_size)
         image, vertices = adjust_height(image, vertices)
-        image, vertices = rotate_img(image, vertices)
+        image, vertices = rotate_img(image, vertices, angle_range=5)
         image, vertices = crop_img(image, vertices, labels, self.crop_size)
 
         if image.mode != 'RGB':
@@ -463,7 +463,7 @@ class SceneTextDataset(Dataset):
         image = np.array(image)
 
         funcs = []
-        if self.color_jitter and random_num > 0.5 and random_num <= 0.7:
+        if self.color_jitter and random_num < 0.5:
             # funcs.append(A.ColorJitter(0.5, 0.5, 0.5, 0.25))
             funcs.append(A.RandomBrightnessContrast((0.3,0.5),(-0.3,-0.2), always_apply=True))
         if self.normalize:

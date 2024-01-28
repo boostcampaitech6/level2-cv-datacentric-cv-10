@@ -25,7 +25,7 @@ def parse_args():
     # Conventional args
     parser.add_argument('--data_dir', type=str,
                         default=os.environ.get('SM_CHANNEL_TRAIN', '../../data/medical'))
-    parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR','save_pth/pepper_aug'))
+    parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR','save_pth/brighted_img'))
 
     parser.add_argument('--device', default='cuda' if cuda.is_available() else 'cpu')
     parser.add_argument('--num_workers', type=int, default=8)
@@ -37,6 +37,8 @@ def parse_args():
     parser.add_argument('--max_epoch', type=int, default=100)
     parser.add_argument('--save_interval', type=int, default=5)
     parser.add_argument('--ignore_tags', type=list, default=['masked', 'excluded-region', 'maintable', 'stamp'])
+    parser.add_argument('--ignore_list', type=list, default=['drp.en_ko.in_house.deepnatural_002491.jpg',
+                                                            'drp.en_ko.in_house.deepnatural_003347.jpg'])
 
     args = parser.parse_args()
 
@@ -47,10 +49,10 @@ def parse_args():
 
 
 def do_training(data_dir, model_dir, device, image_size, input_size, num_workers, batch_size,
-                learning_rate, max_epoch, save_interval, ignore_tags):
+                learning_rate, max_epoch, save_interval, ignore_tags, ignore_list):
     
     wandb.init(
-    project="yumin", name='pepper', group = "level2-cv-10-detection",
+    project="yumin", group = "level2-cv-10-detection", name='brighted_img',  # 변경 !!
     config={
         "learning_rate": args.learning_rate,  # 학습률을 wandb config에 추가
         "epochs": args.max_epoch,
@@ -63,7 +65,10 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
         split='train',
         image_size=image_size,
         crop_size=input_size,
-        ignore_tags=ignore_tags
+        ignore_tags=ignore_tags,
+        color_jitter = True,
+        normalize = True,
+        ignore_list = ignore_list
     )
     dataset = EASTDataset(dataset)
     num_batches = math.ceil(len(dataset) / batch_size)
@@ -100,7 +105,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8, weight_decay=1e-2, amsgrad=False)
     #optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, cycle_momentum=True)
     #scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 2], gamma=0.1)
-    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 3, max_epoch//3*2], gamma=0.1)
+    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 3, max_epoch//3*2], gamma=0.01)
     #scheduler = lr_scheduler.CyclicLR(optimizer, base_lr=learning_rate, max_lr = learning_rate*100, step_size_up=10, mode='triangular2')
 
 

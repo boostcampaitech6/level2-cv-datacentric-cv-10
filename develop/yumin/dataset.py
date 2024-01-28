@@ -270,17 +270,17 @@ def move_pepper_noise(img, vertices):  # 뒷배경과 pepper 노이즈 추가
     long_side = max(original_width,original_height)
     # new_original_width, new_original_height = int(original_width * 0.8), int(original_height * 0.8)
 
-    img, new_vertices = resize_img(img, vertices, int(long_side*0.8))
-    new_width, new_height = 3500, 4800 # 뒷배경 생성
+    resized_img, new_vertices = resize_img(img, vertices, int(long_side*0.8))
+    new_width, new_height = int(resized_img.size[0]*1.1), int(resized_img.size[1]*1.5) # 뒷배경 생성
     background_b = Image.new('RGB', (new_width, new_height), (255, 255, 255))
     background_f = Image.new('RGB', (new_width, new_height), (255, 255, 255))
 
     # 원본 이미지를 뒷배경에 추가
-    max_x = new_width - img.size[0]
-    max_y = new_height - img.size[1]
+    max_x = new_width - resized_img.size[0]
+    max_y = new_height - resized_img.size[1]
     random_x = random.randint(0, max_x)
     random_y = random.randint(0, max_y)
-    background_b.paste(img, (random_x, random_y))
+    background_b.paste(resized_img, (random_x, random_y))
     new_vertices[:, 0] += random_x  # bbox 위치도 수정
     new_vertices[:, 1] += random_y
 
@@ -396,6 +396,7 @@ class SceneTextDataset(Dataset):
                  image_size=2048,
                  crop_size=1024,
                  ignore_tags=[],
+                 ignore_list=[],
                  ignore_under_threshold=10,
                  drop_under_threshold=1,
                  color_jitter=True,
@@ -411,6 +412,7 @@ class SceneTextDataset(Dataset):
         self.color_jitter, self.normalize = color_jitter, normalize
 
         self.ignore_tags = ignore_tags
+        self.ignore_list = ignore_list
 
         self.drop_under_threshold = drop_under_threshold
         self.ignore_under_threshold = ignore_under_threshold
@@ -421,6 +423,11 @@ class SceneTextDataset(Dataset):
     def __getitem__(self, idx):
         image_fname = self.image_fnames[idx]
         image_fpath = osp.join(self.image_dir, image_fname)
+
+        if image_fpath in self.ignore_list:
+            apply_augmentation = False
+        else:
+            apply_augmentation = True
 
         vertices, labels = [], []
         for word_info in self.anno['images'][image_fname]['words'].values():
@@ -447,12 +454,13 @@ class SceneTextDataset(Dataset):
 
         image = Image.open(image_fpath)
         random_num = np.random.rand()
-        if random_num > 0.9:
-            image, vertices = move_pepper_noise(image, vertices)
-        elif random_num > 0.8 and random_num <= 0.9:
-            image, vertices = pepper_noise(image, vertices)
-        elif random_num > 0.6 and random_num <= 0.8:
-            image, vertices = gaussianblur(image, vertices)
+        if apply_augmentation:
+            if random_num > 0.9:
+                image, vertices = move_pepper_noise(image, vertices)
+            elif random_num > 0.8 and random_num <= 0.9:
+                image, vertices = pepper_noise(image, vertices)
+            elif random_num > 0.6 and random_num <= 0.8:
+                image, vertices = gaussianblur(image, vertices)
         image, vertices = resize_img(image, vertices, self.image_size)
         image, vertices = adjust_height(image, vertices)
         image, vertices = rotate_img(image, vertices, angle_range=5)
@@ -463,7 +471,7 @@ class SceneTextDataset(Dataset):
         image = np.array(image)
 
         funcs = []
-        if self.color_jitter and random_num < 0.5:
+        if self.color_jitter and random_num < 0.5 and apply_augmentation:
             # funcs.append(A.ColorJitter(0.5, 0.5, 0.5, 0.25))
             funcs.append(A.RandomBrightnessContrast((0.3,0.5),(-0.3,-0.2), always_apply=True))
         if self.normalize:

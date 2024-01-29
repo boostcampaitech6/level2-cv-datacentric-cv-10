@@ -299,7 +299,7 @@ def move_pepper_noise(img, vertices):  # 뒷배경과 pepper 노이즈 추가
 def pepper_noise(img, vertices): # pepper 노이즈 추가
     resized_img, new_vertices = resize_img(img, vertices, 2048)
     # 원하는 노이즈 pepper 추가
-    num_noise_points = 60000  # 점의 개수
+    num_noise_points = 30000  # 점의 개수
     noise_color = (0, 0, 0)  # 검정색
     resized_width, resized_height = resized_img.size
     background_f = Image.new('RGB', (resized_width, resized_height), (255, 255, 255))
@@ -315,7 +315,7 @@ def pepper_noise(img, vertices): # pepper 노이즈 추가
     return result_image, new_vertices
 
 def gaussianblur(img, vertices):
-    blurred_img = img.filter(ImageFilter.GaussianBlur(radius=2))
+    blurred_img = img.filter(ImageFilter.GaussianBlur(radius=1))
     return blurred_img, vertices
 
 def adjust_height(img, vertices, ratio=0.2):
@@ -467,10 +467,10 @@ class SceneTextDataset(Dataset):
         image = np.array(image)
 
         funcs = []
-        if self.color_jitter and random_num < 0.5 and apply_augmentation:
+        if self.color_jitter and random_num < 0.2 and apply_augmentation:
             funcs.append(A.RandomBrightnessContrast((0.3,0.5),(-0.3,-0.2), always_apply=True))
         if self.normalize:
-            funcs.append(A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)))
+            funcs.append(A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)))
         transform = A.Compose(funcs)
 
         image = transform(image=image)['image']

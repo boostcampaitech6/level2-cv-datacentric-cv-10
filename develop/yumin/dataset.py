@@ -262,6 +262,10 @@ def resize_img(img, vertices, size):
         img = img.resize((size, int(h * ratio)), Image.BILINEAR)
     else:
         img = img.resize((int(w * ratio), size), Image.BILINEAR)
+
+    if img.mode != 'RGB':
+        img = img.convert('RGB')
+
     new_vertices = vertices * ratio
     return img, new_vertices
 

@@ -9,9 +9,12 @@ def read_json(filename: str):
         ann = json.load(handle)
     return ann
 
-data = read_json("/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/yumin/predictions/only_pepper.json") #json 불러오기
-img_lists = glob('../data/medical/img/test/*.jpg')      # test 이미지 폴더에서 이미지 불러오기
-img_folder = '/data/ephemeral/home/level2-cv-datacentric-cv-10/data/medical/img/test'  # test 폴더 풀러오기
+# data = read_json("/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/yumin/predictions/eunsung_output.json") #json 불러오기
+# img_lists = glob('../data/medical/img/test/*.jpg')      # test 이미지 폴더에서 이미지 불러오기
+# img_folder = '/data/ephemeral/home/level2-cv-datacentric-cv-10/data/medical/img/test'  # test 폴더 풀러오기
+data = read_json("/data/ephemeral/home/level2-cv-datacentric-cv-10/data/medical/OCR/json/_new_json.json") #json 불러오기
+img_lists = glob('/data/ephemeral/home/level2-cv-datacentric-cv-10/data/medical/OCR/img/*.jpg')      # test 이미지 폴더에서 이미지 불러오기
+img_folder = '/data/ephemeral/home/level2-cv-datacentric-cv-10/data/medical/OCR/img'  # test 폴더 풀러오기
 
 img_lists = [i.split('/')[-1] for i in img_lists]
 
@@ -47,4 +50,4 @@ def save_vis_to_img(save_dir: str | os.PathLike = None, img_lists: list = None) 
             )
         img.save(os.path.join(save_dir, img_path))
         
-save_vis_to_img("test_vis_res", img_lists)
+save_vis_to_img("test_test_vis_res", img_lists)

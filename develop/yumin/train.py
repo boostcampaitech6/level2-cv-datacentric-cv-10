@@ -25,7 +25,7 @@ def parse_args():
     # Conventional args
     parser.add_argument('--data_dir', type=str,
                         default=os.environ.get('SM_CHANNEL_TRAIN', '../../data/medical'))
-    parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR','save_pth/brighted_img'))
+    parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR','save_pth/pepper_2'))
 
     parser.add_argument('--device', default='cuda' if cuda.is_available() else 'cpu')
     parser.add_argument('--num_workers', type=int, default=8)
@@ -52,7 +52,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
                 learning_rate, max_epoch, save_interval, ignore_tags, ignore_list):
     
     wandb.init(
-    project="yumin", group = "level2-cv-10-detection", name='brighted_img',  # 변경 !!
+    project="yumin", group = "level2-cv-10-detection", name='pepper_2',  # 변경 !!
     config={
         "learning_rate": args.learning_rate,  # 학습률을 wandb config에 추가
         "epochs": args.max_epoch,
@@ -101,12 +101,8 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     model = EAST()
     model.to(device)
     print('cuda 사용중 :', torch.cuda.is_available())
-    #optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8, weight_decay=1e-2, amsgrad=False)
-    #optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, cycle_momentum=True)
-    #scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 2], gamma=0.1)
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 3, max_epoch//3*2], gamma=0.01)
-    #scheduler = lr_scheduler.CyclicLR(optimizer, base_lr=learning_rate, max_lr = learning_rate*100, step_size_up=10, mode='triangular2')
 
 
     #model.train()
@@ -155,16 +151,6 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
                     'v_IoU loss': _extra_info['iou_loss']}
                     )
         
-        # 훈련 및 검증 메트릭을 모두 포함하여 출력
-        #print(f'Epoch {epoch + 1} - Train Loss: {_epoch_loss / num_batches:.4f}, 'f'Valid Loss: {valid_loss:.4f}, {_valid_dict}')
-
-        #print(f'Epoch {epoch+1}, Valid Loss: {valid_loss:.4f}')
-
-        # 체크포인트 저장 조건
-        # if valid_loss < best_loss:
-        #     best_loss = valid_loss
-        #     ckpt_fpath = osp.join(model_dir, 'best_model.pth')
-        #     torch.save(model.state_dict(), ckpt_fpath)
         scheduler.step()
 
         print('Mean loss: {:.4f} | Elapsed time: {}'.format(

@@ -23,12 +23,12 @@ def parse_args():
 
     #input
     parser.add_argument('--data_dir', default=os.environ.get('SM_CHANNEL_EVAL', '../../data/medical'))
-    parser.add_argument('--model_dir', default=os.environ.get('SM_CHANNEL_MODEL', 'save_pth/only_pepper')) # 폴더선택
-    parser.add_argument('--select_epoch', default='90.pth')
+    parser.add_argument('--model_dir', default=os.environ.get('SM_CHANNEL_MODEL', 'save_pth/pepper_2')) # 폴더선택
+    parser.add_argument('--select_epoch', default='100.pth')  # epoch 선택
 
     # output
     parser.add_argument('--output_dir', default=os.environ.get('SM_OUTPUT_DATA_DIR', 'predictions'))
-    parser.add_argument('--output_name', default=os.environ.get('SM_OUTPUT_DATA_DIR', 'only_pepper.csv'))
+    parser.add_argument('--output_name', default=os.environ.get('SM_OUTPUT_DATA_DIR', 'pepper.csv'))
 
     parser.add_argument('--device', default='cuda' if cuda.is_available() else 'cpu')
     parser.add_argument('--input_size', type=int, default=2048)
@@ -42,7 +42,8 @@ def parse_args():
     return args
 
 
-def do_inference(model, ckpt_fpath, data_dir, input_size, batch_size, split='test'):
+def do_inference(model, ckpt_fpath, data_dir, input_size, batch_size, split='test'): # test 출력
+#def do_inference(model, ckpt_fpath, data_dir, input_size, batch_size, split='valid_test'): #valid 출력
     model.load_state_dict(torch.load(ckpt_fpath, map_location='cpu'))
     model.eval()
 

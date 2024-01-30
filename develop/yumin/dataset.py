@@ -424,7 +424,7 @@ class SceneTextDataset(Dataset):
         image_fname = self.image_fnames[idx]
         image_fpath = osp.join(self.image_dir, image_fname)
 
-        if image_fpath in self.ignore_list:
+        if image_fpath in self.ignore_list or image_fname[:5] == 'image':
             apply_augmentation = False
         else:
             apply_augmentation = True

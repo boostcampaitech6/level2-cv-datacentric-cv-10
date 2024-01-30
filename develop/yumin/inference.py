@@ -20,9 +20,15 @@ def parse_args():
     parser = ArgumentParser()
 
     # Conventional args
-    parser.add_argument('--data_dir', default=os.environ.get('SM_CHANNEL_EVAL', '../data/medical'))
-    parser.add_argument('--model_dir', default=os.environ.get('SM_CHANNEL_MODEL', 'trained_models'))
+
+    #input
+    parser.add_argument('--data_dir', default=os.environ.get('SM_CHANNEL_EVAL', '../../data/medical'))
+    parser.add_argument('--model_dir', default=os.environ.get('SM_CHANNEL_MODEL', 'save_pth/pepper_2')) # 폴더선택
+    parser.add_argument('--select_epoch', default='100.pth')  # epoch 선택
+
+    # output
     parser.add_argument('--output_dir', default=os.environ.get('SM_OUTPUT_DATA_DIR', 'predictions'))
+    parser.add_argument('--output_name', default=os.environ.get('SM_OUTPUT_DATA_DIR', 'pepper.csv'))
 
     parser.add_argument('--device', default='cuda' if cuda.is_available() else 'cpu')
     parser.add_argument('--input_size', type=int, default=2048)
@@ -36,7 +42,8 @@ def parse_args():
     return args
 
 
-def do_inference(model, ckpt_fpath, data_dir, input_size, batch_size, split='test'):
+def do_inference(model, ckpt_fpath, data_dir, input_size, batch_size, split='test'): # test 출력
+#def do_inference(model, ckpt_fpath, data_dir, input_size, batch_size, split='valid_test'): #valid 출력
     model.load_state_dict(torch.load(ckpt_fpath, map_location='cpu'))
     model.eval()
 
@@ -67,7 +74,7 @@ def main(args):
     model = EAST(pretrained=False).to(args.device)
 
     # Get paths to checkpoint files
-    ckpt_fpath = osp.join(args.model_dir, 'latest.pth')
+    ckpt_fpath = osp.join(args.model_dir, args.select_epoch)
 
     if not osp.exists(args.output_dir):
         os.makedirs(args.output_dir)
@@ -79,7 +86,7 @@ def main(args):
                                 args.batch_size, split='test')
     ufo_result['images'].update(split_result['images'])
 
-    output_fname = 'output.csv'
+    output_fname = args.output_name
     with open(osp.join(args.output_dir, output_fname), 'w') as f:
         json.dump(ufo_result, f, indent=4)
 

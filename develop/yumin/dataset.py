@@ -262,30 +262,30 @@ def resize_img(img, vertices, size):
         img = img.resize((size, int(h * ratio)), Image.BILINEAR)
     else:
         img = img.resize((int(w * ratio), size), Image.BILINEAR)
+
+    if img.mode != 'RGB':
+        img = img.convert('RGB')
+
     new_vertices = vertices * ratio
     return img, new_vertices
 
 def move_pepper_noise(img, vertices):  # 뒷배경과 pepper 노이즈 추가
-    original_width, original_height = img.size
-    long_side = max(original_width,original_height)
-    # new_original_width, new_original_height = int(original_width * 0.8), int(original_height * 0.8)
-
-    img, new_vertices = resize_img(img, vertices, int(long_side*0.8))
-    new_width, new_height = 3500, 4800 # 뒷배경 생성
+    resized_img, new_vertices = resize_img(img, vertices, 2048)
+    new_width, new_height = int(resized_img.size[0]*1.1), int(resized_img.size[1]*1.5) # 뒷배경 생성
     background_b = Image.new('RGB', (new_width, new_height), (255, 255, 255))
     background_f = Image.new('RGB', (new_width, new_height), (255, 255, 255))
 
     # 원본 이미지를 뒷배경에 추가
-    max_x = new_width - img.size[0]
-    max_y = new_height - img.size[1]
+    max_x = new_width - resized_img.size[0]
+    max_y = new_height - resized_img.size[1]
     random_x = random.randint(0, max_x)
     random_y = random.randint(0, max_y)
-    background_b.paste(img, (random_x, random_y))
+    background_b.paste(resized_img, (random_x, random_y))
     new_vertices[:, 0] += random_x  # bbox 위치도 수정
     new_vertices[:, 1] += random_y
 
     # 원하는 노이즈 pepper 추가
-    num_noise_points = 30000  # 점의 개수
+    num_noise_points = 60000  # 점의 개수
     noise_color = (0, 0, 0)  # 검정색
 
     draw = ImageDraw.Draw(background_f)
@@ -296,30 +296,30 @@ def move_pepper_noise(img, vertices):  # 뒷배경과 pepper 노이즈 추가
         radius = random.randint(1, 3)
         draw.ellipse((x-radius, y-radius, x+radius, y+radius), fill=noise_color)
     background_f = background_f.filter(ImageFilter.GaussianBlur(radius=1)) # 점 blur
-    result_image = Image.blend(background_b, background_f, alpha=0.2)
+    result_image = Image.blend(background_b, background_f, alpha=0.1)
 
     return result_image, new_vertices
 
 def pepper_noise(img, vertices): # pepper 노이즈 추가
+    resized_img, new_vertices = resize_img(img, vertices, 2048)
     # 원하는 노이즈 pepper 추가
     num_noise_points = 30000  # 점의 개수
     noise_color = (0, 0, 0)  # 검정색
-    original_width, original_height = img.size
-    background_f = Image.new('RGB', (original_width, original_height), (255, 255, 255))
-
+    resized_width, resized_height = resized_img.size
+    background_f = Image.new('RGB', (resized_width, resized_height), (255, 255, 255))
     draw = ImageDraw.Draw(background_f)
     for _ in range(num_noise_points):
-        x = random.randint(0, original_width)
-        y = random.randint(0, original_height)
+        x = random.randint(0, resized_width)
+        y = random.randint(0, resized_height)
         noise_color = (0, 0, 0)
-        radius = random.randint(1, 3)
+        radius = random.randint(1, 5)
         draw.ellipse((x-radius, y-radius, x+radius, y+radius), fill=noise_color)
     background_f = background_f.filter(ImageFilter.GaussianBlur(radius=1)) # 점 blur
-    result_image = Image.blend(img, background_f, alpha=0.2)
-    return result_image, vertices
+    result_image = Image.blend(resized_img, background_f, alpha=0.1)
+    return result_image, new_vertices
 
 def gaussianblur(img, vertices):
-    blurred_img = img.filter(ImageFilter.GaussianBlur(radius=3))
+    blurred_img = img.filter(ImageFilter.GaussianBlur(radius=1))
     return blurred_img, vertices
 
 def adjust_height(img, vertices, ratio=0.2):
@@ -343,7 +343,7 @@ def adjust_height(img, vertices, ratio=0.2):
     return img, new_vertices
 
 
-def rotate_img(img, vertices, angle_range=20):
+def rotate_img(img, vertices, angle_range=5):
     '''rotate image [-10, 10] degree to aug data
     Input:
         img         : PIL Image
@@ -396,6 +396,7 @@ class SceneTextDataset(Dataset):
                  image_size=2048,
                  crop_size=1024,
                  ignore_tags=[],
+                 ignore_list=[],
                  ignore_under_threshold=10,
                  drop_under_threshold=1,
                  color_jitter=True,
@@ -411,6 +412,7 @@ class SceneTextDataset(Dataset):
         self.color_jitter, self.normalize = color_jitter, normalize
 
         self.ignore_tags = ignore_tags
+        self.ignore_list = ignore_list
 
         self.drop_under_threshold = drop_under_threshold
         self.ignore_under_threshold = ignore_under_threshold
@@ -421,6 +423,11 @@ class SceneTextDataset(Dataset):
     def __getitem__(self, idx):
         image_fname = self.image_fnames[idx]
         image_fpath = osp.join(self.image_dir, image_fname)
+
+        if image_fpath in self.ignore_list:
+            apply_augmentation = False
+        else:
+            apply_augmentation = True
 
         vertices, labels = [], []
         for word_info in self.anno['images'][image_fname]['words'].values():
@@ -446,16 +453,17 @@ class SceneTextDataset(Dataset):
         )
 
         image = Image.open(image_fpath)
-        random_num = random.random()
-        if random_num >= 0.95:
-            image, vertices = move_pepper_noise(image, vertices)
-        if random_num <= 0.1:
-            image, vertices = pepper_noise(image, vertices)
-        if random_num > 0.1 and random_num <= 0.2:
-            image, vertices = gaussianblur(image, vertices)
+        random_num = np.random.rand()
+        if apply_augmentation:
+            # if random_num > 0.95:
+            #     image, vertices = move_pepper_noise(image, vertices)
+            if random_num > 0.8 and random_num <= 0.9:
+                image, vertices = pepper_noise(image, vertices)
+            elif random_num > 0.6 and random_num <= 0.8:
+                image, vertices = gaussianblur(image, vertices)
         image, vertices = resize_img(image, vertices, self.image_size)
         image, vertices = adjust_height(image, vertices)
-        image, vertices = rotate_img(image, vertices)
+        image, vertices = rotate_img(image, vertices, angle_range=5)
         image, vertices = crop_img(image, vertices, labels, self.crop_size)
 
         if image.mode != 'RGB':
@@ -463,10 +471,10 @@ class SceneTextDataset(Dataset):
         image = np.array(image)
 
         funcs = []
-        if self.color_jitter:
-            funcs.append(A.ColorJitter(0.5, 0.5, 0.5, 0.25))
+        if self.color_jitter and random_num < 0.2 and apply_augmentation:
+            funcs.append(A.RandomBrightnessContrast((0.3,0.5),(-0.3,-0.2), always_apply=True))
         if self.normalize:
-            funcs.append(A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)))
+            funcs.append(A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)))
         transform = A.Compose(funcs)
 
         image = transform(image=image)['image']

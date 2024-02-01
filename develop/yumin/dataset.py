@@ -329,13 +329,33 @@ def spot_pepper(img, vertices):  # 몇몇 위치에 집중적으로 점 찍기
     num_spot = random.choice(num_spot_choices)
     max_point = 10
     dot_radius = 1
-    noise_color = (50, 50, 50)  
+    noise_color = (150, 150, 150)  
 
     draw = ImageDraw.Draw(resized_img)
     for _ in range(num_spot):
         x = random.randint(max_point, resized_width - max_point)
         y = random.randint(max_point, resized_height - max_point)
         num_noise_points = random.randint(5, 15)
+        for _ in range(num_noise_points):
+            nx = random.randint(x, x + max_point)
+            ny = random.randint(y - max_point, y + max_point)
+            draw.ellipse((nx - dot_radius, ny - dot_radius, nx + dot_radius, ny + dot_radius), fill=noise_color)
+
+    for _ in range(20):
+        max_point = random.choice([5, 10, 20])
+        x = random.randint(max_point, resized_width - max_point)
+        y = random.randint(max_point, max_point + 30)
+        num_noise_points = random.randint(5, 30)
+        for _ in range(num_noise_points):
+            nx = random.randint(x, x + max_point)
+            ny = random.randint(y - max_point, y + max_point)
+            draw.ellipse((nx - dot_radius, ny - dot_radius, nx + dot_radius, ny + dot_radius), fill=noise_color)
+
+    for _ in range(30):
+        max_point = random.choice([5, 10, 20])
+        x = random.randint(max_point, max_point + 50)
+        y = random.randint(max_point, resized_height - max_point)
+        num_noise_points = random.randint(5, 30)
         for _ in range(num_noise_points):
             nx = random.randint(x, x + max_point)
             ny = random.randint(y - max_point, y + max_point)

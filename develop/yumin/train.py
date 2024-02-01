@@ -25,7 +25,7 @@ def parse_args():
     # Conventional args
     parser.add_argument('--data_dir', type=str,
                         default=os.environ.get('SM_CHANNEL_TRAIN', '../../data/medical'))
-    parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR','save_pth/only_t_extended_experiment'))
+    parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR','save_pth/_extended_experiment'))
 
     parser.add_argument('--device', default='cuda' if cuda.is_available() else 'cpu')
     parser.add_argument('--num_workers', type=int, default=8)
@@ -33,7 +33,7 @@ def parse_args():
     parser.add_argument('--image_size', type=int, default=2048)
     parser.add_argument('--input_size', type=int, default=1024)
     parser.add_argument('--batch_size', type=int, default=8)
-    parser.add_argument('--learning_rate', type=float, default=1e-3)
+    parser.add_argument('--learning_rate', type=float, default=1e-4)
     parser.add_argument('--max_epoch', type=int, default=50)
     parser.add_argument('--save_interval', type=int, default=5)
     parser.add_argument('--ignore_tags', type=list, default=['masked', 'excluded-region', 'maintable', 'stamp'])
@@ -52,7 +52,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
                 learning_rate, max_epoch, save_interval, ignore_tags, ignore_list):
     
     wandb.init(
-    project="yumin", group = "level2-cv-10-detection", name='only_t_extended_experiment',  # 변경 !!
+    project="yumin", group = "level2-cv-10-detection", name='_extended_experiment',  # 변경 !!
     config={
         "learning_rate": args.learning_rate,  # 학습률을 wandb config에 추가
         "epochs": args.max_epoch,
@@ -98,7 +98,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
 
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = EAST(pretrained=False, saved_model_path='./save_pth/new_data/45.pth')
+    model = EAST(pretrained=False, saved_model_path='./save_pth/only_t_extended_experiment/50.pth')
     # model = EAST()
     model.to(device)
     print('cuda 사용중 :', torch.cuda.is_available())

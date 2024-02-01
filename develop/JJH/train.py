@@ -14,6 +14,7 @@ from tqdm import tqdm
 from east_dataset import EASTDataset
 from dataset import SceneTextDataset
 from model import EAST
+import wandb
 
 
 def parse_args():
@@ -21,7 +22,7 @@ def parse_args():
 
     # Conventional args
     parser.add_argument('--data_dir', type=str,
-                        default=os.environ.get('SM_CHANNEL_TRAIN', '../data/medical'))
+                        default=os.environ.get('SM_CHANNEL_TRAIN', '../../data/new_medical'))
     parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR',
                                                                         'trained_models'))
 
@@ -32,7 +33,7 @@ def parse_args():
     parser.add_argument('--input_size', type=int, default=1024)
     parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--learning_rate', type=float, default=1e-3)
-    parser.add_argument('--max_epoch', type=int, default=150)
+    parser.add_argument('--max_epoch', type=int, default=50)
     parser.add_argument('--save_interval', type=int, default=5)
     parser.add_argument('--ignore_tags', type=list, default=['masked', 'excluded-region', 'maintable', 'stamp'])
 
@@ -46,6 +47,14 @@ def parse_args():
 
 def do_training(data_dir, model_dir, device, image_size, input_size, num_workers, batch_size,
                 learning_rate, max_epoch, save_interval, ignore_tags):
+    
+    wandb.init(
+    project="JJH", group = "level2-cv-10-detection", name='new_data_continue_from_63epoch',  # 변경 !!
+    config={
+        "learning_rate": args.learning_rate,  # 학습률을 wandb config에 추가
+        "epochs": args.max_epoch,
+    },
+    )
     dataset = SceneTextDataset(
         data_dir,
         split='train',
@@ -63,11 +72,14 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     )
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = EAST()
+    model = EAST(pretrained=False)
+    
     model.to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 2], gamma=0.1)
-
+    model.load_state_dict(torch.load('./trained_models/latest.pth'))
+    # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    # scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 2], gamma=0.1)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8, weight_decay=1e-2, amsgrad=False)
+    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 3, max_epoch//3*2], gamma=0.01)
     model.train()
     for epoch in range(max_epoch):
         epoch_loss, epoch_start = 0, time.time()
@@ -89,7 +101,11 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
                     'IoU loss': extra_info['iou_loss']
                 }
                 pbar.set_postfix(val_dict)
-
+        wandb.log({'learning_rate': optimizer.param_groups[0]['lr'],
+                   't_Cls loss': extra_info['cls_loss'],
+                   't_Angle loss': extra_info['angle_loss'],
+                    't_IoU loss': extra_info['iou_loss'],}
+                    )
         scheduler.step()
 
         print('Mean loss: {:.4f} | Elapsed time: {}'.format(

@@ -2,3 +2,4 @@ data
 *.pth
 vis_res
 *.tar.gz
+predictions

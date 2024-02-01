@@ -1,0 +1,797 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 1]: 100%|█████████████████████████████████████| 20/20 [15:08<00:00, 45.40s/it, Cls loss=0.131, Angle loss=0.0317, IoU loss=0.44]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 2]:  95%|██████████████████████████████████▏ | 19/20 [15:01<00:18, 18.48s/it, Cls loss=0.144, Angle loss=0.0247, IoU loss=0.423]
+[Epoch 2]: 100%|████████████████████████████████████| 20/20 [15:02<00:00, 45.11s/it, Cls loss=0.134, Angle loss=0.0385, IoU loss=0.461]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 3]: 100%|████████████████████████████████████| 20/20 [15:06<00:00, 45.30s/it, Cls loss=0.143, Angle loss=0.0258, IoU loss=0.445]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 4]: 100%|████████████████████████████████████| 20/20 [15:15<00:00, 45.76s/it, Cls loss=0.259, Angle loss=0.0229, IoU loss=0.711]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 5]: 100%|████████████████████████████████████| 20/20 [15:04<00:00, 45.22s/it, Cls loss=0.146, Angle loss=0.0227, IoU loss=0.329]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 6]: 100%|████████████████████████████████████| 20/20 [14:49<00:00, 14.58s/it, Cls loss=0.126, Angle loss=0.0667, IoU loss=0.357]
+[Epoch 6]: 100%|████████████████████████████████████| 20/20 [14:49<00:00, 44.50s/it, Cls loss=0.126, Angle loss=0.0667, IoU loss=0.357]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 7]: 100%|███████████████████████████████████| 20/20 [15:13<00:00, 45.69s/it, Cls loss=0.137, Angle loss=0.00926, IoU loss=0.267]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 8]: 100%|███████████████████████████████████| 20/20 [15:05<00:00, 45.27s/it, Cls loss=0.111, Angle loss=0.00801, IoU loss=0.282]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 9]: 100%|████████████████████████████████████| 20/20 [15:00<00:00, 45.01s/it, Cls loss=0.141, Angle loss=0.0385, IoU loss=0.317]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 10]: 100%|███████████████████████████████████| 20/20 [15:09<00:00, 45.46s/it, Cls loss=0.171, Angle loss=0.0508, IoU loss=0.363]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 11]: 100%|███████████████████████████████████| 20/20 [14:58<00:00, 44.95s/it, Cls loss=0.263, Angle loss=0.0315, IoU loss=0.518]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 12]: 100%|███████████████████████████████████| 20/20 [15:02<00:00, 45.13s/it, Cls loss=0.149, Angle loss=0.0258, IoU loss=0.321]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 13]:  90%|████████████████████████████████▍   | 18/20 [15:00<01:09, 34.68s/it, Cls loss=0.141, Angle loss=0.034, IoU loss=0.317]
+[Epoch 13]: 100%|███████████████████████████████████| 20/20 [15:01<00:00, 45.08s/it, Cls loss=0.136, Angle loss=0.0303, IoU loss=0.298]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 14]:  95%|█████████████████████████████████▎ | 19/20 [15:04<00:13, 13.87s/it, Cls loss=0.137, Angle loss=0.0169, IoU loss=0.415]
+[Epoch 14]: 100%|████████████████████████████████████| 20/20 [15:04<00:00, 45.22s/it, Cls loss=0.13, Angle loss=0.0989, IoU loss=0.406]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 15]:  90%|████████████████████████████████▍   | 18/20 [15:04<00:54, 27.48s/it, Cls loss=0.117, Angle loss=0.011, IoU loss=0.314]
+[Epoch 15]: 100%|███████████████████████████████████| 20/20 [15:06<00:00, 45.30s/it, Cls loss=0.125, Angle loss=0.0101, IoU loss=0.296]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 16]:  90%|███████████████████████████████▌   | 18/20 [15:00<01:03, 31.73s/it, Cls loss=0.121, Angle loss=0.0135, IoU loss=0.305]
+[Epoch 16]: 100%|███████████████████████████████████| 20/20 [15:01<00:00, 45.09s/it, Cls loss=0.152, Angle loss=0.0372, IoU loss=0.358]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 17]:  85%|█████████████████████████████▊     | 17/20 [14:51<01:31, 30.35s/it, Cls loss=0.162, Angle loss=0.0129, IoU loss=0.361]
+[Epoch 17]: 100%|████████████████████████████████████| 20/20 [14:54<00:00, 44.72s/it, Cls loss=0.345, Angle loss=0.153, IoU loss=0.669]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 18]:  90%|███████████████████████████████▌   | 18/20 [14:43<00:57, 28.52s/it, Cls loss=0.132, Angle loss=0.0185, IoU loss=0.305]
+[Epoch 18]: 100%|███████████████████████████████████| 20/20 [14:44<00:00, 44.23s/it, Cls loss=0.113, Angle loss=0.0113, IoU loss=0.271]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 19]:  95%|██████████████████████████████████▏ | 19/20 [15:01<00:25, 25.48s/it, Cls loss=0.15, Angle loss=0.0355, IoU loss=0.339]
+[Epoch 19]: 100%|███████████████████████████████████| 20/20 [15:01<00:00, 45.09s/it, Cls loss=0.182, Angle loss=0.0344, IoU loss=0.313]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 20]:  90%|███████████████████████████████▌   | 18/20 [15:04<01:05, 32.93s/it, Cls loss=0.113, Angle loss=0.0228, IoU loss=0.265]
+[Epoch 20]: 100%|███████████████████████████████████| 20/20 [15:06<00:00, 45.32s/it, Cls loss=0.185, Angle loss=0.0519, IoU loss=0.434]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 21]: 100%|████████████████████████████████████| 20/20 [14:54<00:00, 44.75s/it, Cls loss=0.126, Angle loss=0.311, IoU loss=0.355]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 22]:  90%|██████████████████████████████▌   | 18/20 [14:29<01:05, 32.50s/it, Cls loss=0.106, Angle loss=0.00993, IoU loss=0.276]
+[Epoch 22]: 100%|██████████████████████████████████████| 20/20 [14:30<00:00, 43.53s/it, Cls loss=0.17, Angle loss=0.44, IoU loss=0.481]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 23]:  90%|███████████████████████████████▌   | 18/20 [15:07<00:47, 23.96s/it, Cls loss=0.134, Angle loss=0.0151, IoU loss=0.279]
+[Epoch 23]: 100%|████████████████████████████████████| 20/20 [15:08<00:00, 45.43s/it, Cls loss=0.24, Angle loss=0.0131, IoU loss=0.321]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 24]: 100%|███████████████████████████████████| 20/20 [14:54<00:00, 15.33s/it, Cls loss=0.127, Angle loss=0.0146, IoU loss=0.252]
+[Epoch 24]: 100%|███████████████████████████████████| 20/20 [14:54<00:00, 44.72s/it, Cls loss=0.127, Angle loss=0.0146, IoU loss=0.252]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 25]: 100%|████████████████████████████████████| 20/20 [14:46<00:00, 44.34s/it, Cls loss=0.11, Angle loss=0.0172, IoU loss=0.281]
+Mean loss: 0.4510 | Elapsed time: 0:14:46.701416
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 26]:  90%|████████████████████████████████▍   | 18/20 [15:06<01:00, 30.42s/it, Cls loss=0.126, Angle loss=0.022, IoU loss=0.255]
+[Epoch 26]: 100%|████████████████████████████████████| 20/20 [15:08<00:00, 45.41s/it, Cls loss=0.14, Angle loss=0.0619, IoU loss=0.234]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 27]: 100%|███████████████████████████████████| 20/20 [14:51<00:00, 11.20s/it, Cls loss=0.108, Angle loss=0.0247, IoU loss=0.286]
+[Epoch 27]: 100%|███████████████████████████████████| 20/20 [14:51<00:00, 44.60s/it, Cls loss=0.108, Angle loss=0.0247, IoU loss=0.286]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 28]:  95%|█████████████████████████████████▎ | 19/20 [15:00<00:14, 14.23s/it, Cls loss=0.136, Angle loss=0.0144, IoU loss=0.374]
+[Epoch 28]: 100%|████████████████████████████████████| 20/20 [15:01<00:00, 45.06s/it, Cls loss=0.281, Angle loss=0.207, IoU loss=0.478]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 29]:  90%|████████████████████████████████▍   | 18/20 [14:47<00:49, 24.76s/it, Cls loss=0.14, Angle loss=0.0182, IoU loss=0.358]
+[Epoch 29]: 100%|████████████████████████████████████| 20/20 [14:49<00:00, 44.47s/it, Cls loss=0.188, Angle loss=0.014, IoU loss=0.318]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 30]:  90%|███████████████████████████████▌   | 18/20 [14:55<00:54, 27.20s/it, Cls loss=0.125, Angle loss=0.0231, IoU loss=0.315]
+[Epoch 30]: 100%|███████████████████████████████████| 20/20 [14:57<00:00, 44.86s/it, Cls loss=0.114, Angle loss=0.0671, IoU loss=0.343]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 31]: 100%|████████████████████████████████████| 20/20 [14:57<00:00, 11.72s/it, Cls loss=0.143, Angle loss=0.0576, IoU loss=0.63]
+[Epoch 31]: 100%|████████████████████████████████████| 20/20 [14:57<00:00, 44.90s/it, Cls loss=0.143, Angle loss=0.0576, IoU loss=0.63]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 32]: 100%|███████████████████████████████████| 20/20 [15:02<00:00, 45.11s/it, Cls loss=0.112, Angle loss=0.0123, IoU loss=0.277]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 33]:  95%|██████████████████████████████████▏ | 19/20 [15:15<00:22, 22.67s/it, Cls loss=0.149, Angle loss=0.0262, IoU loss=0.38]
+[Epoch 33]: 100%|████████████████████████████████████| 20/20 [15:15<00:00, 45.79s/it, Cls loss=0.121, Angle loss=0.0128, IoU loss=0.38]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 34]:  95%|███████████████████████████████████▏ | 19/20 [15:00<00:17, 17.95s/it, Cls loss=0.14, Angle loss=0.017, IoU loss=0.334]
+[Epoch 34]: 100%|███████████████████████████████████| 20/20 [15:01<00:00, 45.07s/it, Cls loss=0.129, Angle loss=0.0372, IoU loss=0.299]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 35]: 100%|███████████████████████████████████| 20/20 [14:54<00:00, 44.70s/it, Cls loss=0.163, Angle loss=0.0638, IoU loss=0.422]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 36]: 100%|███████████████████████████████████| 20/20 [15:14<00:00, 45.74s/it, Cls loss=0.107, Angle loss=0.0517, IoU loss=0.279]
+  0%|                                                                                                           | 0/20 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Epoch 37]:  90%|███████████████████████████████▌   | 18/20 [15:26<00:13,  6.97s/it, Cls loss=0.117, Angle loss=0.0192, IoU loss=0.346]
+[Epoch 37]: 100%|████████████████████████████████████| 20/20 [15:28<00:00, 46.43s/it, Cls loss=0.106, Angle loss=0.108, IoU loss=0.197]
+
+
+
+
+
+
+
+
+
+[Epoch 38]:  40%|██████████████                     | 8/20 [08:42<13:03, 65.27s/it, Cls loss=0.119, Angle loss=0.00958, IoU loss=0.272]
+Traceback (most recent call last):
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/JJH/train.py", line 128, in <module>
+    main(args)
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/JJH/train.py", line 123, in main
+    do_training(**args.__dict__)
+  File "/data/ephemeral/home/level2-cv-datacentric-cv-10/develop/JJH/train.py", line 87, in do_training
+    for img, gt_score_map, gt_geo_map, roi_mask in train_loader:
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 630, in __next__
+    data = self._next_data()
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1328, in _next_data
+    idx, data = self._get_data()
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1294, in _get_data
+    success, data = self._try_get_data()
+  File "/opt/conda/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1132, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/opt/conda/lib/python3.10/multiprocessing/queues.py", line 113, in get
+    if not self._poll(timeout):
+  File "/opt/conda/lib/python3.10/multiprocessing/connection.py", line 257, in poll
+    return self._poll(timeout)
+  File "/opt/conda/lib/python3.10/multiprocessing/connection.py", line 424, in _poll
+    r = wait([self], timeout)
+  File "/opt/conda/lib/python3.10/multiprocessing/connection.py", line 931, in wait
+    ready = selector.select(timeout)
+  File "/opt/conda/lib/python3.10/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt

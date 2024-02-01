@@ -217,14 +217,16 @@ class Output(nn.Module):
 
 
 class EAST(nn.Module):
-    def __init__(self, pretrained=True):
+    def __init__(self, pretrained=True, saved_model_path=None):
+    # def __init__(self, pretrained=True):
         super(EAST, self).__init__()
         self.extractor = Extractor(pretrained)
         self.merge = Merge()
         self.output = Output()
-
         self.criterion = EASTLoss()
-
+        if saved_model_path is not None:
+            self.load_state_dict(torch.load(saved_model_path))
+ 
     def forward(self, x):
         return self.output(self.merge(self.extractor(x)))
 

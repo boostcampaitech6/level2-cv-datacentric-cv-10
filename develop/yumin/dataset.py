@@ -270,7 +270,8 @@ def resize_img(img, vertices, size):
     return img, new_vertices
 
 def move_pepper_noise(img, vertices):  # 뒷배경과 pepper 노이즈 추가
-    resized_img, new_vertices = resize_img(img, vertices, 2048)
+    resized_img, new_vertices = img, vertices
+    # resized_img, new_vertices = resize_img(img, vertices, 2048)
     new_width, new_height = int(resized_img.size[0]*1.1), int(resized_img.size[1]*1.5) # 뒷배경 생성
     background_b = Image.new('RGB', (new_width, new_height), (255, 255, 255))
     background_f = Image.new('RGB', (new_width, new_height), (255, 255, 255))
@@ -301,7 +302,8 @@ def move_pepper_noise(img, vertices):  # 뒷배경과 pepper 노이즈 추가
     return result_image, new_vertices
 
 def pepper_noise(img, vertices): # pepper 노이즈 추가
-    resized_img, new_vertices = resize_img(img, vertices, 2048)
+    resized_img, new_vertices = img, vertices
+    # resized_img, new_vertices = resize_img(img, vertices, 2048)
     # 원하는 노이즈 pepper 추가
     num_noise_points = 30000  # 점의 개수
     noise_color = (0, 0, 0)  # 검정색
@@ -317,6 +319,28 @@ def pepper_noise(img, vertices): # pepper 노이즈 추가
     background_f = background_f.filter(ImageFilter.GaussianBlur(radius=1)) # 점 blur
     result_image = Image.blend(resized_img, background_f, alpha=0.1)
     return result_image, new_vertices
+
+def spot_pepper(img, vertices):  # 몇몇 위치에 집중적으로 점 찍기
+    resized_img, new_vertices = img, vertices
+    # resized_img, new_vertices = resize_img(img, vertices, 2048)
+    resized_width, resized_height = resized_img.size
+
+    num_spot_choices = [10, 20, 30, 40, 50, 60, 80, 100, 200, 300]
+    num_spot = random.choice(num_spot_choices)
+    max_point = 10
+    dot_radius = 1
+    noise_color = (50, 50, 50)  
+
+    draw = ImageDraw.Draw(resized_img)
+    for _ in range(num_spot):
+        x = random.randint(max_point, resized_width - max_point)
+        y = random.randint(max_point, resized_height - max_point)
+        num_noise_points = random.randint(5, 15)
+        for _ in range(num_noise_points):
+            nx = random.randint(x, x + max_point)
+            ny = random.randint(y - max_point, y + max_point)
+            draw.ellipse((nx - dot_radius, ny - dot_radius, nx + dot_radius, ny + dot_radius), fill=noise_color)
+    return resized_img, new_vertices
 
 def gaussianblur(img, vertices):
     blurred_img = img.filter(ImageFilter.GaussianBlur(radius=1))
@@ -454,14 +478,16 @@ class SceneTextDataset(Dataset):
 
         image = Image.open(image_fpath)
         random_num = np.random.rand()
+        image, vertices = resize_img(image, vertices, self.image_size)
         if apply_augmentation:
             # if random_num > 0.95:
             #     image, vertices = move_pepper_noise(image, vertices)
-            if random_num > 0.8 and random_num <= 0.9:
+            if random_num > 0.9:
                 image, vertices = pepper_noise(image, vertices)
-            elif random_num > 0.6 and random_num <= 0.8:
+            elif random_num > 0.8 and random_num <= 0.9:
                 image, vertices = gaussianblur(image, vertices)
-        image, vertices = resize_img(image, vertices, self.image_size)
+            elif random_num > 0.6  and random_num <= 0.8:
+                image, vertices = spot_pepper(image, vertices)
         image, vertices = adjust_height(image, vertices)
         image, vertices = rotate_img(image, vertices, angle_range=5)
         image, vertices = crop_img(image, vertices, labels, self.crop_size)
@@ -471,7 +497,7 @@ class SceneTextDataset(Dataset):
         image = np.array(image)
 
         funcs = []
-        if self.color_jitter and random_num < 0.2 and apply_augmentation:
+        if self.color_jitter and random_num > 0.5  and random_num <= 0.6 and apply_augmentation:
             funcs.append(A.RandomBrightnessContrast((0.3,0.5),(-0.3,-0.2), always_apply=True))
         if self.normalize:
             funcs.append(A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)))

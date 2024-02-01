@@ -25,7 +25,7 @@ def parse_args():
     # Conventional args
     parser.add_argument('--data_dir', type=str,
                         default=os.environ.get('SM_CHANNEL_TRAIN', '../../data/medical'))
-    parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR','save_pth/new_data'))
+    parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR','save_pth/only_t_extended_experiment'))
 
     parser.add_argument('--device', default='cuda' if cuda.is_available() else 'cpu')
     parser.add_argument('--num_workers', type=int, default=8)
@@ -34,7 +34,7 @@ def parse_args():
     parser.add_argument('--input_size', type=int, default=1024)
     parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--learning_rate', type=float, default=1e-3)
-    parser.add_argument('--max_epoch', type=int, default=100)
+    parser.add_argument('--max_epoch', type=int, default=50)
     parser.add_argument('--save_interval', type=int, default=5)
     parser.add_argument('--ignore_tags', type=list, default=['masked', 'excluded-region', 'maintable', 'stamp'])
     parser.add_argument('--ignore_list', type=list, default=['drp.en_ko.in_house.deepnatural_002491.jpg',
@@ -52,7 +52,7 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
                 learning_rate, max_epoch, save_interval, ignore_tags, ignore_list):
     
     wandb.init(
-    project="yumin", group = "level2-cv-10-detection", name='new_new_data',  # 변경 !!
+    project="yumin", group = "level2-cv-10-detection", name='only_t_extended_experiment',  # 변경 !!
     config={
         "learning_rate": args.learning_rate,  # 학습률을 wandb config에 추가
         "epochs": args.max_epoch,
@@ -80,31 +80,31 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     )
 
     # 검증 데이터셋 로드
-    valid_dataset = SceneTextDataset(
-        data_dir,
-        split='valid',  # 'valid' 스플릿 사용
-        image_size=image_size,
-        crop_size=input_size,
-        ignore_tags=ignore_tags
-    )
-    valid_dataset = EASTDataset(valid_dataset)
-    _num_batches = math.ceil(len(valid_dataset) / batch_size)
-    valid_loader = DataLoader(
-        valid_dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers
-    )
+    # valid_dataset = SceneTextDataset(
+    #     data_dir,
+    #     split='valid',  # 'valid' 스플릿 사용
+    #     image_size=image_size,
+    #     crop_size=input_size,
+    #     ignore_tags=ignore_tags
+    # )
+    # valid_dataset = EASTDataset(valid_dataset)
+    # _num_batches = math.ceil(len(valid_dataset) / batch_size)
+    # valid_loader = DataLoader(
+    #     valid_dataset,
+    #     batch_size=batch_size,
+    #     shuffle=False,
+    #     num_workers=num_workers
+    # )
 
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = EAST()
+    model = EAST(pretrained=False, saved_model_path='./save_pth/new_data/45.pth')
+    # model = EAST()
     model.to(device)
     print('cuda 사용중 :', torch.cuda.is_available())
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), eps=1e-8, weight_decay=1e-2, amsgrad=False)
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 3, max_epoch//3*2], gamma=0.01)
-
-
+    cnt = 1
     #model.train()
     for epoch in range(max_epoch):
         model.train()
@@ -129,29 +129,30 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
                 pbar.set_postfix(val_dict)
 
 
-        model.eval()
-        with tqdm(total=_num_batches) as _pbar:
-            with torch.no_grad():
-                for img, gt_score_map, gt_geo_map, roi_mask in valid_loader:
-                    _, _extra_info = model.train_step(img, gt_score_map, gt_geo_map, roi_mask)
+        # model.eval()
+        # with tqdm(total=_num_batches) as _pbar:
+        #     with torch.no_grad():
+        #         for img, gt_score_map, gt_geo_map, roi_mask in valid_loader:
+        #             _, _extra_info = model.train_step(img, gt_score_map, gt_geo_map, roi_mask)
 
-                    _pbar.update(1)
-                    _valid_dict = {
-                        'v_Cls loss': _extra_info['cls_loss'], 'v_Angle loss': _extra_info['angle_loss'],
-                        'v_IoU loss': _extra_info['iou_loss']
-                    }
-                    _pbar.set_postfix(_valid_dict)
+        #             _pbar.update(1)
+        #             _valid_dict = {
+        #                 'v_Cls loss': _extra_info['cls_loss'], 'v_Angle loss': _extra_info['angle_loss'],
+        #                 'v_IoU loss': _extra_info['iou_loss']
+        #             }
+        #             _pbar.set_postfix(_valid_dict)
 
         wandb.log({'learning_rate': optimizer.param_groups[0]['lr'],
                    't_Cls loss': extra_info['cls_loss'],
                    't_Angle loss': extra_info['angle_loss'],
-                    't_IoU loss': extra_info['iou_loss'],
-                    "v_Cls loss": _extra_info['cls_loss'],
-                    "v_Angle loss": _extra_info['angle_loss'],
-                    'v_IoU loss': _extra_info['iou_loss']}
+                    't_IoU loss': extra_info['iou_loss']}#,
+                    # "v_Cls loss": _extra_info['cls_loss'],
+                    # "v_Angle loss": _extra_info['angle_loss'],
+                    # 'v_IoU loss': _extra_info['iou_loss']}
                     )
         
         scheduler.step()
+        cnt += 1
 
         print('Mean loss: {:.4f} | Elapsed time: {}'.format(
             epoch_loss / num_batches, timedelta(seconds=time.time() - epoch_start)))
